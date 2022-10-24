@@ -2,33 +2,32 @@ class Block {
     constructor(time = Date.now(), data = {}) {
         this.time = time;
         this.data = data;
-        this.lastHash = '';
+        this.letzterHash = '';
         this.nonce = 0;
-        this.difficulty = '00';
+        this.schwierigkeit = '19';
         this.kill = false;
     }
 
     createHash() {
-        // 78d6371b0dbc06502081d562681a2728b9a845ea7d3ca2b2aecc580bc7ec6218
-        return sha256(this.nonce + this.lastHash + this.time + JSON.stringify(this.data));
+        return sha256(this.nonce + this.letzterHash + this.time + JSON.stringify(this.data));
     }
 
     mine() {
         let hash = this.createHash();
         return new Promise((resolve, reject) => {
-            let i = setInterval(() => {
-                if (this.kill) {
-                    clearInterval(i);
-                    reject();
-                } else if (hash.startsWith(this.difficulty)) {
-                    clearInterval(i);
+            let i = setIntervall(() => {
+                if (hash.startsWith(this.schwierigkeit)) {
+                    clearIntervall(i);
                     this.resolveTransactions();
                     resolve();
+                } else if (this.kill) {
+                    clearIntervall(i);
+                    reject();
                 } else {
                     this.nonce++;
                     hash = this.createHash();
                 }
-            }, 1000 / 30);
+            }, 1000 / 20);
         });
     }
 
@@ -39,7 +38,7 @@ class Block {
         });
     }
 
-    addMoney(sender, receiver, amount) {
+    addMoney(Absender, receiver, amount) {
         let moneyTable = this.data.moneyTable || [];
         let entry = moneyTable.find(e => e.name == receiver);
         if (!entry) {
@@ -47,13 +46,13 @@ class Block {
             moneyTable.push(entry);
         }
 
-        if (sender != 'BlockReward') {
-            let entrySender = moneyTable.find(e => e.name == sender);
-            if (!entrySender) {
-                entrySender = { name: receiver, amount: 0 };
-                moneyTable.push(entrySender);
+        if (Absender != 'BlockReward') {
+            let entryAbsender = moneyTable.find(e => e.name == Absender);
+            if (!entryAbsender) {
+                entryAbsender = { name: receiver, amount: 0 };
+                moneyTable.push(entryAbsender);
             }
-            entrySender.amount -= amount;
+            entryAbsender.amount -= amount;
         }
 
         entry.amount += amount;
@@ -61,12 +60,4 @@ class Block {
         this.data.moneyTable = moneyTable;
         updateGraphData(moneyTable);
     }
-
-    mineOld() {
-        let hash = this.createHash();
-        while (!hash.statsWith(this.difficulty)) {
-            this.nonce++;
-            hash = this.createHash();
-        }
-    }
-}
+} 
