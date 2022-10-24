@@ -1,35 +1,36 @@
 class Blockchain {
     constructor() {
-        this.chain = [];
+        this.kette = [];
     }
 
-    async addBlock(block, nodeID) {
-        let lb = this.getLastBlock();
+    async blockHinzufügen(block, nodeID) {
+        let lb = this.getLetztenBlock();
         block.data.moneyTable = lb ? lb.data.moneyTable : [];
-        block.lastHash = lb ? lb.createHash() : '';
+        block.letzterHash = lb ? lb.createHash() : '';
         try {
             await block.mine();
             broadcaster.notify(nodeID);
-            this.chain.push(Object.freeze(block));
-            log(`Node ${nodeID} hat den Block gefunden! (${this.chain.length} Blocks insgesamt)`);
+            this.kette.push(Object.freeze(block));
+            log(`Node ${nodeID} hat den Block gefunden! (${this.kette.length} Blocks insgesamt)`);
+            //log(JSON.stringify(blockchain.kette))
         } catch (e) {
             console.log(e);
         }
     }
 
-    isValid() {
-        let invalidBlock = this.chain.find((currBlock, i) => {
-            let prevBlock = this.chain[i - 1];
-            return prevBlock && prevBlock.createHash() != currBlock.lastHash;
+    blockValidieren() {
+        let invaliderBlock = this.kette.find((aktuellerBlock, i) => {
+            let letzterBlock = this.kette[i - 1];
+            return letzterBlock && letzterBlock.createHash() != aktuellerBlock.letzterHash;
         });
-        if (invalidBlock) {
+        if (invaliderBlock) {
             return true;
         } else {
             return false;
         }
     }
 
-    getLastBlock() {
-        return this.chain[this.chain.length - 1];
+    getLetztenBlock() {
+        return this.kette[this.kette.length - 1];
     }
 }
