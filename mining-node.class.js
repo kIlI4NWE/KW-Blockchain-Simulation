@@ -1,9 +1,7 @@
-
-
 class MiningNode {
 
   isMining = false;
-  currentBlock;
+  aktuellerBlock;
 
   constructor(id, name) {
       this.id = id;
@@ -13,7 +11,7 @@ class MiningNode {
       broadcaster.subscribe((nodeID) => {
           console.log('Nachricht empfangen:', nodeID);
           if (nodeID !== this.id) {
-              this.killCurrentBlock();
+              this.killAktuellenBlock();
           }
       });
 
@@ -28,21 +26,21 @@ class MiningNode {
       if (this.isMining) {
           this.mine();
       } else {
-          this.killCurrentBlock();
+          this.killAktuellenBlock();
       }
   }
 
-  killCurrentBlock() {
-      if (this.currentBlock) {
-          this.currentBlock.kill = true;
+  killAktuellenBlock() {
+      if (this.aktuellerBlock) {
+          this.aktuellerBlock.kill = true;
       }
       this.blockData = { transactions: [{ from: 'BlockReward', to: this.name, amount: 5 }] };
   }
 
   async mine() {
       renderCurrentTransactions(this.blockData.transactions);
-      this.currentBlock = new Block(Date.now(), this.blockData);
-      await blockchain.addBlock(this.currentBlock, this.id);
+      this.aktuellerBlock = new Block(Date.now(), this.blockData);
+      await blockchain.blockHinzufügen(this.aktuellerBlock, this.id);
       if (this.isMining) {
           this.blockData = { transactions: [{ from: 'BlockReward', to: this.name, amount: 5 }] };
           this.mine();
