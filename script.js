@@ -1,21 +1,21 @@
-let node0 = new MiningNode(0, 'Junus');
-let node1 = new MiningNode(1, 'Kilian');
+let node1 = new MiningNode(1, 'User 1');
+let node2 = new MiningNode(2 , 'User 2');
 let blockchain = new Blockchain();
 let CHART_DATA = {
-    amounts: [0, 0, 0, 0, 0, 0],
-    labels: ['', '', '', '', '', '']
+    amounts: [0, 0, 0],
+    labels: ['', '', '']
 };
-
-function startNode0() {
-    log('Toggle Node 0');
-    n0.classList.toggle('pause-btn');
-    node0.toggle();
-}
 
 function startNode1() {
     log('Toggle Node 1');
     n1.classList.toggle('pause-btn');
     node1.toggle();
+}
+
+function startNode2() {
+    log('Toggle Node 2');
+    n2.classList.toggle('pause-btn');
+    node2.toggle();
 }
 
 function sendMoney() {
@@ -27,13 +27,17 @@ function sendMoney() {
     });
 }
 
+function blockInfos() {
+    var number = "123";
+}
+
 function log(text) {
     let hours = ('0' + new Date().getHours()).slice(-2);
     let minutes = ('0' + new Date().getMinutes()).slice(-2);
     logs.innerHTML += `<div class="mb-16">
     <code>
     <i>${hours}:${minutes}</i> ${text}
-</code></div>`;
+    </code></div>`;
 }
 
 function updateGraphData(moneyTable) {
